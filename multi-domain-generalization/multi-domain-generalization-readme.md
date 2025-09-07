@@ -23,7 +23,7 @@ python setup.py develop
 
 ### Dataset Preparation
 
-Download the datasets from this [link]((https://drive.google.com/drive/folders/1HNsstr4BF1_PTSNCQMFDaB0iiLDFIP_W?usp=drive_link)), then place them under the directory like:
+Download the datasets from this [link](https://drive.google.com/file/d/1nIer0Zjj5hn5CcPmdW86xQ9zZm1VDqpw/view?usp=sharing), then place them under the directory like:
 
 ```
 multi-domain-generalization/DATA
