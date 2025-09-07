@@ -38,20 +38,16 @@ cd instance-retriveal
 python setup.py develop
 ```
 ### Getting Started
-We utilize 4 Nvidia Tesla V100 (32GB) for training.
-
 + Train models on `dukemtmc` and test on unseen `market1501`:
 
 ```
-sh scripts/train.sh dukemtmc market1501 uresnet50 1 uncertainty
+sh scripts/train.sh dukemtmc market1501 uresnet50
 ```
 + Train models on `market1501` and test on unseen `dukemtmc`:
 ```
-sh scripts/train.sh market1501 dukemtmc uresnet50 1 uncertainty
+sh scripts/train.sh market1501 dukemtmc uresnet50
 ```
-
-The checkpoints and logs can be found at [link](https://drive.google.com/drive/folders/1Pn60zo9wAZ656KiuKeqtnkRZNQgbnqcM?usp=sharing).
 
 ### Acknowledge
 
-The implementation is based on [MMT](https://github.com/yxgeee/MMT). We thank them for their excellent projects.
+The implementation is based on [MMT](https://github.com/yxgeee/MMT), [DSU](https://github.com/lixiaotong97/DSU) and [CSU](https://github.com/freshman97/CSU). We thank them for their excellent projects.
