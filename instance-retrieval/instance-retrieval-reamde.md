@@ -31,12 +31,7 @@ instance-retrieval/examples/data
 └── market1501
     └── Market-1501-v15.09.15
 ...
-```
-### Installation
-```
-cd instance-retriveal
-python setup.py develop
-```
+
 ### Getting Started
 + Train models on `dukemtmc` and test on unseen `market1501`:
 

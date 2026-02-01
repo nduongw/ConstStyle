@@ -175,7 +175,7 @@ def main_worker(args):
         if args.arch == 'cresnet50':
             if epoch == 0 or epoch % args.update_interval == 0:
                 for idx, conststyle in enumerate(trainer.model.module.conststyle):
-                    conststyle.cal_mean_std(idx, epoch)
+                    conststyle.cal_mean_std()
 
 
     print("Test on target domain:")

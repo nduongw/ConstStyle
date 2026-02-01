@@ -43,37 +43,16 @@ def wasserstein_distance_multivariate(mean1, cov1, mean2, cov2):
     wasserstein_distance = np.sqrt(mean_distance + cov_term)
     return wasserstein_distance
 
-def mahalanobis_distance(point, mean, cov):
-    inv_cov_matrix = torch.linalg.inv(cov)
-    diff = point - mean
-    distance = torch.sqrt(torch.matmul(torch.matmul(diff, inv_cov_matrix), torch.t(diff)))
-    distance = torch.diagonal(distance)
-    return distance
-
-def euclid_distance(point, mean):
-    diff = point - mean
-    square_diff = diff ** 2
-    sum_square_diff = torch.sum(square_diff, dim=1)
-    distance = torch.sqrt(sum_square_diff)
-    return distance
-
-def wasserstein_distance(mu1, sigma1, mu2, sigma2):
-    mu2, sigma2 = torch.squeeze(mu2), torch.squeeze(sigma2)
-    mean_diff_squared = (mu1 - mu2) ** 2
-    std_diff_squared = (sigma1 - sigma2) ** 2
-    wasserstein_distance = torch.sqrt(torch.sum(mean_diff_squared, dim=1) + torch.sum(std_diff_squared, dim=1))
-    return wasserstein_distance
-
 def sigmoid_increase(x, k=6.0):
     return 1 / (1 + torch.exp(-k * (x - 1)))
 
-class ConstStyle5(nn.Module):
+class ConstStyle(nn.Module):
     def __init__(self, idx, args, eps=1e-6):
         super().__init__()
         self.idx = idx
         self.args = args
         self.eps = eps
-        self.alpha = args.alpha
+        self.alpha_test = args.alpha
         self.mean = []
         self.std = []
         self.domain = []
@@ -98,7 +77,7 @@ class ConstStyle5(nn.Module):
         self.mean.extend(mu)
         self.std.extend(var)
     
-    def cal_mean_std(self, idx, epoch):
+    def cal_mean_std(self):
         mean_list = np.array(self.mean)
         std_list = np.array(self.std)
         stacked_data = np.stack((mean_list, std_list), axis=1)
@@ -187,10 +166,6 @@ class ConstStyle5(nn.Module):
         x_normed = (x - mu) / sig
         
         if is_test:
-            # wass_dist = wasserstein_distance(const_mean, const_std, mu, sig)
-            # if self.idx == 0:
-            #     print(f'Wass distance max value of conststyle layer {self.idx}: {torch.max(wass_dist)} | min value: {torch.min(wass_dist)}')
-
             const_value = torch.reshape(self.const_mean, (2, -1))
             const_mean = const_value[0].float().to('cuda')
             const_std = const_value[1].float().to('cuda')
@@ -198,8 +173,8 @@ class ConstStyle5(nn.Module):
             const_mean = torch.reshape(const_mean, (1, const_mean.shape[0], 1, 1))
             const_std = torch.reshape(const_std, (1, const_std.shape[0], 1, 1))
             if not apply_rate:
-                beta = const_std * self.alpha + (1 - self.alpha) * sig
-                gamma = const_mean * self.alpha + (1 - self.alpha) * mu
+                beta = (1 - self.alpha_test) * const_std + self.alpha_test * sig
+                gamma = (1 - self.alpha_test) * const_mean + self.alpha_test * mu
             else:
                 beta = const_std
                 gamma = const_mean
@@ -221,6 +196,7 @@ class ConstStyle5(nn.Module):
 
             beta = const_std
             gamma = const_mean
+            
         out = x_normed * beta + gamma
             
         return out
@@ -305,8 +281,7 @@ class CResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, layers[3], stride=last_stride, IN=False)
 
         self.num_conststyle = args.num_conststyle
-        print('Aapplying conststyle ver5...')
-        self.conststyle = [ConstStyle5(i, args) for i in range(self.num_conststyle)]
+        self.conststyle = [ConstStyle(i, args) for i in range(self.num_conststyle)]
         
         self.global_avgpool = nn.AdaptiveAvgPool2d(1)
 

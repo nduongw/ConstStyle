@@ -264,7 +264,7 @@ class ConstStyle(nn.Module):
         self.std.extend(var)
         self.domain.extend(domain.detach().squeeze().cpu().numpy())
     
-    def cal_mean_std(self, idx, epoch):
+    def cal_mean_std(self):
         mean_list = np.array(self.mean)
         std_list = np.array(self.std)
         stacked_data = np.stack((mean_list, std_list), axis=1)

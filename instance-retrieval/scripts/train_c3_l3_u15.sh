@@ -1,6 +1,6 @@
 #!/bin/sh
-SOURCE=$1
-TARGET=$2
+SOURCE=market1501
+TARGET=dukemtmc
 ARCH=$3
 SEED=$4
 NAME=$5

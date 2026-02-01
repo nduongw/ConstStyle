@@ -94,7 +94,7 @@ class ConstStyleTrainer(SimpleTrainer):
     def update_cluster(self):
         if self.epoch == 0 or self.epoch % self.args.update_interval == 0:
             for idx, conststyle in enumerate(self.model.backbone.conststyle):
-                conststyle.cal_mean_std(idx, self.epoch)
+                conststyle.cal_mean_std()
                     
     def model_inference(self, input, label, domain, is_test=False):
         if self.epoch == 0:

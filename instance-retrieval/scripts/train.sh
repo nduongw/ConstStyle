@@ -2,7 +2,7 @@
 SOURCE=$1
 TARGET=$2
 ARCH=$3
-SEED=$4
+SEED=42
 NAME=$5
 
 
